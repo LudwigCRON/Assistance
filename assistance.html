@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="Assistance">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="application-name" content="Assistance" />
+	<title>Assistance Counter</title>
+	<link rel="stylesheet" href="css/app.css">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	<script type="text/javascript" src="js/html2canvas.js" async="true"></script>
+	<script type="text/javascript" src="js/Classe.js"></script>
+	<script type="text/javascript" src="js/Promise.js"></script>
+</head>
+<body ng-controller="ListCtrl" load="loaded()" onmousedown="return false;" ontouchstart="return false;">
+	<header class="top-bar">
+		<label for="username">People Name</label>
+		<input type="text" name="username" ng-model="name"/>
+		<span class="button add-group" click="addTag()">Add</span>
+		<span class="button trash" rubish >Remove</span>
+		<span class="button count" click="countPerson()">Count</span>
+		<span class="button mail" click="sendMail({{count}})">Mail</span>
+	</header>
+	<div class="container">
+		<span class="tag" drag ng-repeat="(key, people) in peoples | ArraySort" createdtag="true" id="{{ people }}">{{people}}</span>
+		<div id="map" class="panel" ng-controller="PlanCtrl" load="loaded()"></div>
+	</div>
+	
+	<script type="text/javascript">
+		//function use for dynamic filter to apply on a DOM element
+		function ShortName(input) {
+			var words = input.split(" ");
+			var res = "";
+			for(i=0;i<words.length;i++){
+				res += words[i].substring(0,4)+". ";
+			}
+			return res;
+		}
+
+		//drag and drop memory because IE doesn't know event.dataTransfer
+		var dataTransfer = (function(){
+			return {
+				"text/html":"",
+				"text/plain":"",
+				"element":null,
+				getData:function(t){
+					switch(t){
+						case "text/html":
+							return this["text/html"];
+						break;
+						case "text/plain":
+							return this["text/plain"];
+						break;
+						case "element":
+							return this["element"];
+						break;
+					}
+				},
+				setData:function(t, val){
+					switch(t){
+						case "text/html":
+							this["text/html"] = val;
+						break;
+						case "text/plain":
+							this["text/plain"] = val;
+						break;
+						case "element":
+							this["element"] = val;
+						break;
+					}
+				},
+			};
+		})();
+		var app = angular.module("Assistance", []);
+
+		app.controller("ListCtrl", function($scope){
+			$scope.peoples = [];
+			$scope.count = 0;
+			//drag and drop
+			$scope.drag = false;
+			$scope.start = {"x":0, "y":0};
+
+			//operation sur les labels
+			$scope.addTag = function(){
+				$scope.peoples.push($scope.name);
+				localStorage.setItem("Assistance", JSON.stringify($scope.peoples));							
+			};
+
+			$scope.deleteTag = function(e){
+				if (e.stopPropagation) {
+					e.stopPropagation();
+				}
+				var elem = document.getElementById(dataTransfer.getData('text/html'));
+				elem.parentNode.removeChild(elem);
+				console.log("rm ",dataTransfer.getData('text/html'));
+				$scope.peoples = $scope.peoples.join(";").replace(dataTransfer.getData('text/html')+";", "").split(";");
+				localStorage.setItem("Assistance", JSON.stringify($scope.peoples));		
+			};
+
+			$scope.countPerson = function(){
+				$scope.count = document.querySelectorAll("span.name.ful").length;
+				alert($scope.count);
+			};
+
+			//evenement sur les labels
+			$scope.dragStart = function(e){
+				e.stopPropagation();
+				e.preventDefault();
+				if(e.changedTouches){
+					e = e.changedTouches[0];
+				}
+				this.style.opacity = 0.4;
+				//e.dataTransfer.effectAllowed = 'all';
+				dataTransfer.setData('text/html', this.innerHTML);
+				//for touch event
+				dataTransfer.setData("element", this);
+				$scope.drag = true;
+				$scope.start.x = e.pageX - document.body.scrollLeft;
+				$scope.start.y = e.pageY - document.body.scrollTop;
+			};
+
+			$scope.dragEnd = function(e){
+				e.stopPropagation();
+				this.style.opacity = 1;
+				//for touch event
+				$scope.drag = false;
+				var target_cell = document.getElementsByClassName("cell over")[0];
+				if(target_cell!=undefined){
+					var target = target_cell.getElementsByClassName("name")[0];
+					target.innerHTML = ShortName(dataTransfer.getData('text/html'))+"<a href=\"#\" class=\"delete\"></a>";
+					target.classList.add("ful");
+					angular.element(target.getElementsByTagName("a")[0]).bind("click", $scope.deletePeople);
+				}
+				//retour du label à sa place
+				var elem = dataTransfer.getData("element");
+				elem.style.top = 0;
+				elem.style.left = 0;
+				elem.classList.remove("over");
+			};
+
+			$scope.dragMove = function(e){
+				e.stopPropagation();
+				if($scope.drag){
+					if(e.changedTouches){
+						e = e.changedTouches[0];
+					}
+					var elem = dataTransfer.getData("element");
+					elem.style.left = e.pageX-document.body.scrollLeft-$scope.start.x+"px";
+					elem.style.top = e.pageY-document.body.scrollTop-$scope.start.y+"px";
+					var cells = document.getElementById("map").getElementsByClassName("cell");
+					for(i=0;i<cells.length;i++){
+						var cell = cells[i];
+						var pos = cell.getClientRects()[0];
+						if(pos.left < e.pageX-document.body.scrollLeft && pos.right > e.pageX-document.body.scrollLeft && pos.top < e.pageY-document.body.scrollTop && pos.bottom > e.pageY-document.body.scrollTop){
+							cell.classList.add("over");
+						}else{
+							cell.classList.remove("over");
+						}
+					}
+				}
+			};
+
+			//chargement de l'appli et fonctionnalité
+			$scope.loaded = function(){
+				if(localStorage.getItem("Assistance")!=null){
+					$scope.peoples = JSON.parse(localStorage.getItem("Assistance")).sort();
+				}
+				console.log($scope.peoples);
+			};
+
+			$scope.sendMail = function(){
+				$scope.count = document.querySelectorAll("span.name.ful").length;
+				html2canvas(document.getElementById("map"), {
+					onrendered:function(canvas){
+						window.location = $scope.mailto(canvas, $scope.count);
+						console.log($scope.mailto(canvas, $scope.count));
+					}
+				});
+			};
+
+			$scope.mailto = function(canvas, num){
+				var uri = canvas.toDataURL();
+				var address = "mailto:ludwig.cron@gmail.com?subject=Assistance Reunion "+(new Date()).toLocaleDateString()+"&body=il y a "+num+" personne"+(num>1?"s":"");/*+" <img src=\""+canvas.toDataURL().toString()+"\" alt=\"fiche resume\" />"*/;
+				return address;
+			};
+
+			//libérer la place
+			$scope.deletePeople = function(e){
+				this.parentNode.classList.remove("ful");
+				this.parentNode.classList.remove("over");
+				this.parentNode.innerHTML = "";
+			};
+		});
+
+		app.controller("PlanCtrl", function($scope){
+			$scope.loaded = function(){
+				console.log("loading!");
+				var p = new Async(function(){
+					plan = new Plan(9, 10, 1, 89, [61,62,63,50,60,80],"salle_c");
+					document.getElementById("map").appendChild(plan.getTable());
+					if(document.getElementById("salle_c")){
+						p.resolve("salle_c");
+					}else{
+						p.error("not created");
+					}
+				}).then(function(data){
+					/*var cells = document.getElementById(data).getElementsByTagName("div");
+					angular.forEach(cells, function(cell, key){
+						cell.addEventListener("dragenter", $scope.dragEnter, false);
+						cell.addEventListener("dragover", $scope.dragOver, false);
+						cell.addEventListener("dragleave", $scope.dragLeave, false);
+						cell.addEventListener("drop", $scope.drop, false);
+					});
+					console.log(data, "ok!");*/	
+				},function(error){
+					console.error(error);
+				},function(param){
+					console.log("always done");
+				});
+
+				p.run();
+			};
+		});
+
+		app.directive("click", function(){
+			return{ 
+				restrict:"A",
+				link:function(scope, elem, attrs){
+					elem.bind("mouseup", function(){
+						scope.$apply(attrs.click);
+					});
+				}
+			};
+		});
+
+		app.directive("load", function(){
+			return{ 
+				restrict:"A",
+				link:function(scope, elem, attrs){
+					elem.ready(function(){
+						scope.$apply(attrs.load);
+					});
+				}
+			};
+		});
+
+		app.directive("createdtag", function(){
+			return{
+				restrict:"A",
+				link:function(scope, elem, attrs){
+					elem.bind("mousedown", scope.dragStart);
+					elem.bind("mouseup", scope.dragEnd);
+					angular.element(document).bind("mousemove", scope.dragMove);
+					if(elem[0].ontouchstart){
+						elem.bind("touchstart", scope.dragStart);
+						elem.bind("touchend", scope.dragEnd);
+						angular.element(document).bind("touchmove", scope.dragMove);
+					}					
+					/*elem[0].addEventListener("dragstart", scope.dragStart, false);
+					elem[0].addEventListener("dragend", scope.dragEnd, false);*/
+				}
+			}
+		});
+
+		app.directive("rubish", function(){
+			return{ 
+				restrict:"A",
+				link:function(scope, elem, attrs){
+					elem.bind("dragover", scope.dragOver);
+					elem.bind("drop", scope.deleteTag);
+					elem.bind("dragenter", scope.dragEnter);
+					elem.bind("dragleave", scope.dragLeave);
+				}
+			};
+		});
+
+		app.filter('ArraySort', function() {
+			return function(input) {
+				return input.sort();
+			}
+		});
+
+		app.filter('ShortName', function() {
+			return ShortName(input);
+		});
+
+		angular.element(window).bind("scroll",function(e){
+			document.getElementById("map").style.top = document.body.scrollTop*0.8+"px";
+		});
+	</script>
+	<script src="js/Plan.js"></script>
+</body>
+</html>
