@@ -5,15 +5,65 @@ body{
 	-ms-touch-action: none; /*redirect all touch event in javascript*/
 	padding: 0;
 	margin: 0;
+	background: #F5F5F5;
 }
 
 .top-bar{
 	background: #1F80AF;
 	border-bottom: 1px solid #0099CC;
+	height: 4em;
+	font-size: 1.5em;
+	color: #F5F5F5;
+}
+
+.top-bar > *{
+	float: left;
 }
 
 label:after{
 	content: ' :';
+}
+
+.top-bar > span[input="text"]{
+	display: inline-block;
+	position: relative;
+	background: #0099CC;
+	border: none;
+	height: 2em;
+	width:20em;
+	outline: none;
+	-webkit-transition: all 0.5s linear;
+	-moz-transition: all 0.5s linear;
+	-ms-transition: all 0.5s linear;
+	transition: all 0.5s linear;
+}
+
+.top-bar > span[input="text"]:focus, .top-bar > span[input="text"]:active{
+	background: #FFF;
+	color: #222;
+	border: 1px solid #0099CC;
+}
+
+.top-bar > .button{
+	display: inline-block;
+	content: '+';
+	width: 1em;
+	height: 1em;
+	background: transparent;
+	color: #F5F5F5;
+	padding: 0.125em;
+	font-size: 1.6em;
+	text-align: center;
+	cursor: pointer;
+	-webkit-transition: all 0.5s linear;
+	-moz-transition: all 0.5s linear;
+	-ms-transition: all 0.5s linear;
+	transition: all 0.5s linear;
+}
+
+.top-bar > .button:hover{
+	background: #F5F5F5;
+	color: #0099CC;
 }
 
 .container{
@@ -24,19 +74,23 @@ label:after{
 	right: 1em;
 	overflow: none;
 	width: 100%;
-	height: -webkit-calc(100%-100px);
-	height: -moz-calc(100%-100px);
-	height: -ms-calc(100%-100px);
-	height: calc(100%-100px);
+	height: -webkit-calc(100% - 6em);
+	height: -moz-calc(100% - 6em);
+	height: -ms-calc(100% - 6em);
+	height: calc(100% - 6em);
 }
 
 #map{
-	display: table-column;
-	position: absolute;
-	top:0;
+	display: inline-block;
+	position: fixed;
+	top: 6em;
 	right:0;
 	margin-left:30%;
 	width:70%;
+	height: -webkit-calc(100% - 6em);
+	height: -moz-calc(100% - 6em);
+	height: -ms-calc(100% - 6em);
+	height: calc(100% - 6em);
 	float: right;
 	-webkit-transition: all 1s ease;
 	-moz-transition: all 1s ease;
@@ -164,73 +218,4 @@ a.delete{
 	background-origin: 0 0;
 	width:15px;
 	height:15px;
-}
-
-.button{
-	display:table-cell;
-	background: #9AB935;
-	padding: 0.3em 0.3em 0.3em 2em;
-	border-left:1px solid #8CA830;
-	border-right:1px solid #8CA830;
-	border-bottom:3px solid #8CA830;
-	border-radius: 3px;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1.6em;
-	font-weight: lighter;
-	color: #fff;
-	position:relative;
-	cursor: pointer;
-}
-
-.button:hover{
-	border-bottom:1px solid #8CA830;
-}
-
-.button.mail:before{
-	display:block;
-	content: ' ';
-	background: url("../img/mail.png") 0 0 no-repeat;
-	background-size: cover;
-	width:1.6em;
-	height:1.6em;
-	position:absolute;
-	top:0.1em;
-	left:0.3em;
-}
-
-.button.add-group:before{
-	display:block;
-	content: ' ';
-	background: url("../img/add-group.png") 0 0 no-repeat;
-	background-size: cover;
-	width:1.6em;
-	height:1.6em;
-	position:absolute;
-	top:0.1em;
-	left:0.3em;
-}
-
-.button.trash:before{
-	display:block;
-	content: ' ';
-	background: url("../img/trash.png") 0 0 no-repeat;
-	background-size: cover;
-	width:1.6em;
-	height:1.6em;
-	position:absolute;
-	top:0.1em;
-	left:0.3em;
-}
-
-input[type="text"]{
-	width:0%;
-	min-width:15em;
-	-webkit-transition: all 0.5s linear;
-	-moz-transition: all 0.5s linear;
-	-ms-transition: all 0.5s linear;
-	transition: all 0.5s linear;
-}
-
-input[type="text"]:focus{
-	width:98%;
 }

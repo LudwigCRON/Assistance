@@ -11,14 +11,14 @@
 	<script type="text/javascript" src="js/Classe.js"></script>
 	<script type="text/javascript" src="js/Promise.js"></script>
 </head>
-<body ng-controller="ListCtrl" load="loaded()" onmousedown="return false;" ontouchstart="return false;">
+<body ng-controller="ListCtrl" load="loaded()">
 	<header class="top-bar">
 		<label for="username">People Name</label>
-		<input type="text" name="username" ng-model="name"/>
-		<span class="button add-group" click="addTag()">Add</span>
-		<span class="button trash" rubish >Remove</span>
-		<span class="button count" click="countPerson()">Count</span>
-		<span class="button mail" click="sendMail({{count}})">Mail</span>
+		<span contenteditable="true" input="text" name="username" ng-model="name"></span>
+		<span class="button add-group" click="addTag()">+</span>
+		<span class="button trash" rubish >&minus;</span>
+		<span class="button count" click="countPerson()">&sum;</span>
+		<span class="button mail" click="sendMail()">M</span>
 	</header>
 	<div class="container">
 		<span class="tag" drag ng-repeat="(key, people) in peoples | ArraySort" createdtag="true" id="{{ people }}">{{people}}</span>
@@ -81,8 +81,10 @@
 
 			//operation sur les labels
 			$scope.addTag = function(){
-				$scope.peoples.push($scope.name);
-				localStorage.setItem("Assistance", JSON.stringify($scope.peoples));							
+				if($scope.name.trim()!=""){
+					$scope.peoples.push($scope.name);
+					localStorage.setItem("Assistance", JSON.stringify($scope.peoples));
+				}
 			};
 
 			$scope.deleteTag = function(e){
@@ -98,7 +100,7 @@
 
 			$scope.countPerson = function(){
 				$scope.count = document.querySelectorAll("span.name.ful").length;
-				alert($scope.count);
+				alert((new Date()).toLocaleDateString()+"\nil y a "+$scope.count+" personne"+($scope.count>1?"s":""));
 			};
 
 			//evenement sur les labels
@@ -159,6 +161,17 @@
 				}
 			};
 
+			$scope.dragCancel = function(e){
+				e.preventDefault();
+				//cancel drag
+				$scope.drag = false;
+				//retour du label à sa place
+				var elem = dataTransfer.getData("element");
+				elem.style.top = 0;
+				elem.style.left = 0;
+				elem.classList.remove("over");
+			};
+
 			//chargement de l'appli et fonctionnalité
 			$scope.loaded = function(){
 				if(localStorage.getItem("Assistance")!=null){
@@ -203,14 +216,7 @@
 						p.error("not created");
 					}
 				}).then(function(data){
-					/*var cells = document.getElementById(data).getElementsByTagName("div");
-					angular.forEach(cells, function(cell, key){
-						cell.addEventListener("dragenter", $scope.dragEnter, false);
-						cell.addEventListener("dragover", $scope.dragOver, false);
-						cell.addEventListener("dragleave", $scope.dragLeave, false);
-						cell.addEventListener("drop", $scope.drop, false);
-					});
-					console.log(data, "ok!");*/	
+					console.log(data);
 				},function(error){
 					console.error(error);
 				},function(param){
@@ -243,6 +249,17 @@
 			};
 		});
 
+		app.directive("input", function(){
+			return{
+				restrict:"A",
+				link:function(scope, elem, attrs){
+					elem.bind("keyup", function(e){
+						scope.name = this.innerHTML;
+					});
+				}
+			}
+		});
+
 		app.directive("createdtag", function(){
 			return{
 				restrict:"A",
@@ -252,6 +269,8 @@
 					angular.element(document).bind("mousemove", scope.dragMove);
 					if(elem[0].ontouchstart){
 						elem.bind("touchstart", scope.dragStart);
+						elem.bind("touchleave", scope.dragCancel);
+						elem.bind("touchcancel", scope.dragCancel);
 						elem.bind("touchend", scope.dragEnd);
 						angular.element(document).bind("touchmove", scope.dragMove);
 					}					
@@ -284,7 +303,12 @@
 		});
 
 		angular.element(window).bind("scroll",function(e){
-			document.getElementById("map").style.top = document.body.scrollTop*0.8+"px";
+			var topBar = document.getElementsByClassName("top-bar")[0];
+			if(document.body.scrollTop>topBar.getClientRects()[0].height){
+				document.getElementById("map").style.top = 0;
+			}else{
+				document.getElementById("map").style.top = topBar.getClientRects()[0].height+"px";
+			}
 		});
 	</script>
 	<script src="js/Plan.js"></script>
