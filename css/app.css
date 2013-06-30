@@ -73,7 +73,7 @@ label:after{
 	left: 1em;
 	right: 1em;
 	overflow: none;
-	width: 100%;
+	width: 30%;
 	height: -webkit-calc(100% - 6em);
 	height: -moz-calc(100% - 6em);
 	height: -ms-calc(100% - 6em);
@@ -162,9 +162,9 @@ label:after{
 }
 
 span.tag{
-	display: table-caption;
+	display: inline-block;
 	background: #0089E0;
-	border-radius: 0 8px 8px 0;
+	border-radius: 0 8px 8px 8px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1.3em;
 	padding: 0.3em 1.2em;
@@ -172,7 +172,9 @@ span.tag{
 	color: #fff;
 	margin:0.5em;
 	z-index: 10;
-	max-width: 25%;
+	max-width: 20em;
+	height: 2rem;
+	line-height: 2rem;
 }
 
 span.tag:before{
@@ -183,12 +185,12 @@ span.tag:before{
 	top:0;
 	width:0;
 	height:0;
-	border-top:0.7rem solid transparent;
-	border-bottom:0.7rem solid transparent;
-	border-right:1em solid #0089E0;
+	border-top:0rem solid transparent;
+	border-bottom:1.7rem solid transparent;
+	border-right:2em solid #0089E0;
 }
 
-span.tag:after{
+/*span.tag:after{
 	display:inline-block;
 	content: ' ';
 	position: absolute;
@@ -198,7 +200,7 @@ span.tag:after{
 	border-radius: 1em;
 	width: 0.7em;
 	height: 0.7em;
-}
+}*/
 
 *[drag], *[draggable] {
 	-moz-user-select: none;
