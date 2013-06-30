@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Lily+Script+One);
+
 body{
 	font-size: 62.5%;
 	height: 100%!important;
@@ -14,10 +16,20 @@ body{
 	height: 4em;
 	font-size: 1.5em;
 	color: #F5F5F5;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: lighter;
 }
 
 .top-bar > *{
 	float: left;
+	margin-top: 1em;
+}
+
+label{
+	font-family: 'Lily Script One', cursive;
+	font-weight: lighter;
+	font-size: 1.4em;
+	margin-left: 1em;
 }
 
 label:after{
@@ -29,8 +41,11 @@ label:after{
 	position: relative;
 	background: #0099CC;
 	border: none;
-	height: 2em;
+	height: 2.5em;
+	line-height: 2.5em;
+	vertical-align: middle;
 	width:20em;
+	padding: 0 1em;
 	outline: none;
 	-webkit-transition: all 0.5s linear;
 	-moz-transition: all 0.5s linear;
@@ -46,15 +61,18 @@ label:after{
 
 .top-bar > .button{
 	display: inline-block;
-	content: '+';
-	width: 1em;
-	height: 1em;
+	margin-top: 0.625em;
+	width: 1.25em;
+	height: 1.25em;
 	background: transparent;
+	font-family: Times, serif;
 	color: #F5F5F5;
-	padding: 0.125em;
+	padding: 0 0.125em 0.26em 0.125em;
+	font-family: "Segoe UI Symbol", Symbol;
 	font-size: 1.6em;
 	text-align: center;
 	cursor: pointer;
+	border-bottom:1px solid #0099CC;
 	-webkit-transition: all 0.5s linear;
 	-moz-transition: all 0.5s linear;
 	-ms-transition: all 0.5s linear;

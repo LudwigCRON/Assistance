@@ -17,8 +17,8 @@
 		<span contenteditable="true" input="text" name="username" ng-model="name"></span>
 		<span class="button add-group" click="addTag()">+</span>
 		<span class="button trash" rubish >&minus;</span>
-		<span class="button count" click="countPerson()">&sum;</span>
-		<span class="button mail" click="sendMail()">M</span>
+		<span class="button count" click="countPerson()">&#x2211;</span>
+		<span class="button mail" click="sendMail()">&#xE120;</span>
 	</header>
 	<div class="container">
 		<span class="tag" drag ng-repeat="(key, people) in peoples | ArraySort" createdtag="true" id="{{ people }}">{{people}}</span>
@@ -201,16 +201,33 @@
 				$scope.count = document.querySelectorAll("span.name.ful").length;
 				html2canvas(document.getElementById("map"), {
 					onrendered:function(canvas){
-						window.location = $scope.mailto(canvas, $scope.count);
-						console.log($scope.mailto(canvas, $scope.count));
+						var elem = document.createElement("img");
+						elem.src = canvas.toDataURL().toString();
+						elem.alt = "fiche resume assistance";
+						elem.id = "fiche";
+						document.body.appendChild(elem);
+						$scope.copyToClip(document.getElementById("fiche"));
+						document.body.removeChild(document.getElementById("fiche"));
+						window.open($scope.mailto($scope.count, elem));
 					}
 				});
 			};
 
-			$scope.mailto = function(canvas, num){
-				var uri = canvas.toDataURL();
-				var address = "mailto:ludwig.cron@gmail.com?subject=Assistance Reunion "+(new Date()).toLocaleDateString()+"&body=il y a "+num+" personne"+(num>1?"s":"");/*+" <img src=\""+canvas.toDataURL().toString()+"\" alt=\"fiche resume\" />"*/;
+			$scope.mailto = function(num, elem){
+				var address = "mailto:ludwig.cron@gmail.com?subject=Assistance Reunion "+(new Date()).toLocaleDateString()+"&body=il y a "+num+" personne"+(num>1?"s":"");
 				return address;
+			};
+
+			$scope.copyToClip = function(elem){
+				elem.contentEditable = 'true';
+				var controlRange;
+				if (document.body.createControlRange) {
+					controlRange = document.body.createControlRange();
+					controlRange.addElement(elem);
+					controlRange.execCommand('Copy');
+				}
+				elem.contentEditable = 'false';
+
 			};
 
 			//libérer la place
