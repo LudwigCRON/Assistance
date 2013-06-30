@@ -124,7 +124,7 @@
 			$scope.dragEnd = function(e){
 				e.stopPropagation();
 				var elem = dataTransfer.getData("element");
-				elem.style.opacity = 1;
+				if(elem!=null) elem.style.opacity = 1;
 				//for touch event
 				$scope.drag = false;
 
@@ -194,6 +194,9 @@
 			$scope.loaded = function(){
 				if(localStorage.getItem("Assistance")!=null){
 					$scope.peoples = JSON.parse(localStorage.getItem("Assistance")).sort();
+					angular.forEach($scope.peoples, function(value, key){
+						$scope.peoples[key] = value.replace(/(<([^>]+)>)/gi, "");
+					});
 				}
 				console.log($scope.peoples);
 			};
