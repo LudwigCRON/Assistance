@@ -190,17 +190,9 @@ span.tag:before{
 	border-right:2em solid #0089E0;
 }
 
-/*span.tag:after{
-	display:inline-block;
-	content: ' ';
-	position: absolute;
-	left:0em;
-	top:0.6em;
-	background: #fff;
-	border-radius: 1em;
-	width: 0.7em;
-	height: 0.7em;
-}*/
+.top-bar> *.trash.over{
+	background: #FFA500;
+}
 
 *[drag], *[draggable] {
 	-moz-user-select: none;
