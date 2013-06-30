@@ -24,7 +24,6 @@
 		<span class="tag" drag ng-repeat="(key, people) in peoples | ArraySort" createdtag="true" id="{{ people }}">{{people}}</span>
 		<div id="map" class="panel" ng-controller="PlanCtrl" load="loaded()"></div>
 	</div>
-	
 	<script type="text/javascript">
 		//function use for dynamic filter to apply on a DOM element
 		function ShortName(input) {
@@ -80,6 +79,7 @@
 			//drag and drop
 			$scope.drag = false;
 			$scope.start = {"x":0, "y":0};
+			$scope.clip = null;
 
 			//operation sur les labels
 			$scope.addTag = function(){
@@ -207,12 +207,20 @@
 			};
 
 			$scope.sendMail = function(){
-				$scope.count = document.querySelectorAll("span.name.ful").length;
-				$scope.copyToClip(document.getElementById("map"));
-				window.open($scope.mailto($scope.count, document.getElementById("map")));
+				html2canvas(document.getElementById("map"), {
+					onrendered: function(canvas) {
+						canvas.id = "clipboard";
+						document.body.appendChild(canvas);
+						$scope.count = document.querySelectorAll("span.name.ful").length;
+						$scope.copyToClip(document.getElementById("clipboard"));
+						window.open($scope.mailto($scope.count));
+						document.body.removeChild(document.getElementById("clipboard"));
+						window.open(canvas.toDataURL('image/jpeg'));
+					}
+				});
 			};
 
-			$scope.mailto = function(num, elem){
+			$scope.mailto = function(num){
 				var address = "mailto:ludwig.cron@gmail.com?subject=Assistance Reunion "+(new Date()).toLocaleDateString()+"&body=il y a "+num+" personne"+(num>1?"s":"");
 				return address;
 			};
@@ -226,7 +234,6 @@
 					controlRange.execCommand('Copy');
 				}
 				elem.contentEditable = 'false';
-
 			};
 
 			//libérer la place
