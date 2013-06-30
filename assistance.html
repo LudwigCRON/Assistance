@@ -164,7 +164,7 @@
 					elem.style.top = e.pageY-document.body.scrollTop-$scope.start.y+"px";
 					var cells = document.getElementById("map").getElementsByClassName("cell");
 					//detect on which cell the label is over.
-					for(i=0;i<cells.length;i++){
+					for(i=0;i<cells.length && cells[i].getAttribute("data-drop")=="true";i++){
 						var cell = cells[i];
 						var pos = cell.getClientRects()[0];
 						if(pos.left < e.clientX && pos.right > e.clientX && pos.top < e.clientY && pos.bottom > e.clientY){
@@ -208,18 +208,8 @@
 
 			$scope.sendMail = function(){
 				$scope.count = document.querySelectorAll("span.name.ful").length;
-				html2canvas(document.getElementById("map"), {
-					onrendered:function(canvas){
-						var elem = document.createElement("img");
-						elem.src = canvas.toDataURL().toString();
-						elem.alt = "fiche resume assistance";
-						elem.id = "fiche";
-						document.body.appendChild(elem);
-						$scope.copyToClip(document.getElementById("fiche"));
-						document.body.removeChild(document.getElementById("fiche"));
-						window.open($scope.mailto($scope.count, elem));
-					}
-				});
+				$scope.copyToClip(document.getElementById("map"));
+				window.open($scope.mailto($scope.count, document.getElementById("map")));
 			};
 
 			$scope.mailto = function(num, elem){
@@ -232,7 +222,7 @@
 				var controlRange;
 				if (document.body.createControlRange) {
 					controlRange = document.body.createControlRange();
-					controlRange.addElement(elem);
+					controlRange.add(elem);
 					controlRange.execCommand('Copy');
 				}
 				elem.contentEditable = 'false';
@@ -318,8 +308,6 @@
 						elem.bind("touchend", scope.dragEnd);
 						angular.element(document).bind("touchmove", scope.dragMove);
 					}					
-					/*elem[0].addEventListener("dragstart", scope.dragStart, false);
-					elem[0].addEventListener("dragend", scope.dragEnd, false);*/
 				}
 			}
 		});
