@@ -288,7 +288,8 @@
 				restrict:"A",
 				link:function(scope, elem, attrs){
 					elem.bind("keyup", function(e){
-						scope.name = this.innerHTML;
+						this.innerHTML=this.innerText.replace(/\n/g, '') || this.textContent.replace(/\n/g,'');
+						scope.name = this.innerText || this.textContent;
 					});
 				}
 			}
