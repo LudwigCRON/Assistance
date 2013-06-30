@@ -107,6 +107,7 @@
 			$scope.dragStart = function(e){
 				e.stopPropagation();
 				e.preventDefault();
+
 				if(e.changedTouches){
 					e = e.changedTouches[0];
 				}
@@ -122,7 +123,8 @@
 
 			$scope.dragEnd = function(e){
 				e.stopPropagation();
-				this.style.opacity = 1;
+				var elem = dataTransfer.getData("element");
+				elem.style.opacity = 1;
 				//for touch event
 				$scope.drag = false;
 
@@ -140,7 +142,6 @@
 					}
 
 					//retour du label à sa place
-					var elem = dataTransfer.getData("element");
 					elem.style.top = 0;
 					elem.style.left = 0;
 					elem.classList.remove("over");
@@ -300,7 +301,7 @@
 				restrict:"A",
 				link:function(scope, elem, attrs){
 					elem.bind("mousedown", scope.dragStart);
-					elem.bind("mouseup", scope.dragEnd);
+					angular.element(document).bind("mouseup", scope.dragEnd);
 					angular.element(document).bind("mousemove", scope.dragMove);
 					if(elem[0].ontouchstart){
 						elem.bind("touchstart", scope.dragStart);

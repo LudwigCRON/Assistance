@@ -119,6 +119,10 @@ label:after{
 
 .table{
 	display: block;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .table > .cell{
@@ -129,6 +133,10 @@ label:after{
 	border: 1px solid transparent;
 	min-height: 8em;
 	overflow: hidden;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .cell[data-drop="true"]{
@@ -152,6 +160,10 @@ label:after{
 	font-family: Arial, Helvetica, sans-serif;
 	font-size:2em;
 	text-align: center;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .cell > span.name.ful{
@@ -167,6 +179,10 @@ label:after{
 	height: 1em;
 	line-height: 1em;
 	text-align: center;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 }
 
 .cell[data-drop="true"] > span.number{
