@@ -73,6 +73,10 @@ label:after{
 	text-align: center;
 	cursor: pointer;
 	border-bottom:1px solid #0099CC;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 	-webkit-transition: all 0.5s linear;
 	-moz-transition: all 0.5s linear;
 	-ms-transition: all 0.5s linear;
@@ -241,10 +245,18 @@ span.tag:before{
 
 a.delete{
 	display:inline-block;
-	content: ' ';
-	background: url('../img/trash-icon.png') 0 0 no-repeat;
-	background-size: cover;
-	background-origin: 0 0;
-	width:15px;
-	height:15px;
+	background: #0089E0;
+	content: url('../img/trash-icon.png');
+	padding: 0.3em;
+	width:0.9em;
+	height:0.9em;
+	z-index: 11;
+	cursor: pointer;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+
+a.delete:hover{
+	background: #F5F5F5;
 }

@@ -30,8 +30,9 @@
 		function ShortName(input) {
 			var words = input.split(" ");
 			var res = "";
+			var seuil = 5;
 			for(i=0;i<words.length;i++){
-				res += words[i].substring(0,4)+". ";
+				res += words[i].substring(0,seuil)+(words[i].length>seuil?". ":" ");
 			}
 			return res;
 		}
@@ -139,12 +140,15 @@
 						target.innerHTML = ShortName(dataTransfer.getData('text/html'))+"<a href=\"#\" class=\"delete\"></a>";
 						target.classList.add("ful");
 						angular.element(target.getElementsByTagName("a")[0]).bind("click", $scope.deletePeople);
+						target_cell.classList.remove("over");
 					}
 
 					//retour du label à sa place
-					elem.style.top = 0;
-					elem.style.left = 0;
-					elem.classList.remove("over");
+					if(elem!=null){
+						elem.style.top = 0;
+						elem.style.left = 0;
+						elem.classList.remove("over");
+					}
 				}
 			};
 
