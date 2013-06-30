@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="Assistance">
 <head>
-	<meta charset="UTF-8">
+	<meta charset="iso-8859-1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="application-name" content="Assistance" />
 	<title>Assistance Counter</title>
@@ -15,8 +15,8 @@
 	<header class="top-bar">
 		<label for="username">People Name</label>
 		<span contenteditable="true" input="text" name="username" ng-model="name"></span>
-		<span class="button add-group" click="addTag()">+</span>
-		<span class="button trash" rubish >&minus;</span>
+		<span class="button add-group" click="addTag()">&#xE109;</span>
+		<span class="button trash" rubish>&#xE108;</span>
 		<span class="button count" click="countPerson()">&#x2211;</span>
 		<span class="button mail" click="sendMail()">&#xE120;</span>
 	</header>
@@ -137,7 +137,7 @@
 					var target_cell = document.getElementsByClassName("cell over")[0];
 					if(target_cell!=undefined){
 						var target = target_cell.getElementsByClassName("name")[0];
-						target.innerHTML = ShortName(dataTransfer.getData('text/html'))+"<a href=\"#\" class=\"delete\"></a>";
+						target.innerHTML = ShortName(dataTransfer.getData('text/html'))+"<a href=\"#\" class=\"delete\">&#xE107;</a>";
 						target.classList.add("ful");
 						angular.element(target.getElementsByTagName("a")[0]).bind("click", $scope.deletePeople);
 						target_cell.classList.remove("over");
