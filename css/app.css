@@ -2,7 +2,7 @@ body{
 	font-size: 62.5%;
 	height: 100%!important;
 	-ms-interpolation-mode: bicubic; /*beautifuler display for downsampled images in IE*/
-	-ms-touch-action: none; /*redirect all touch event in javascript*/
+	-ms-touch-action: pan-y; /*redirect all touch event in javascript*/
 	padding: 0;
 	margin: 0;
 	background: #F5F5F5;
@@ -78,6 +78,7 @@ label:after{
 	height: -moz-calc(100% - 6em);
 	height: -ms-calc(100% - 6em);
 	height: calc(100% - 6em);
+	overflow-y: auto;
 }
 
 #map{

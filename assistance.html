@@ -152,7 +152,7 @@
 					for(i=0;i<cells.length;i++){
 						var cell = cells[i];
 						var pos = cell.getClientRects()[0];
-						if(pos.left < e.pageX-document.body.scrollLeft && pos.right > e.pageX-document.body.scrollLeft && pos.top < e.pageY-document.body.scrollTop && pos.bottom > e.pageY-document.body.scrollTop){
+						if(pos.left < e.clientX && pos.right > e.clientX && pos.top < e.clientY && pos.bottom > e.clientY){
 							cell.classList.add("over");
 						}else{
 							cell.classList.remove("over");
