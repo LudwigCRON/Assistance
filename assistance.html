@@ -71,6 +71,7 @@
 				},
 			};
 		})();
+
 		var app = angular.module("Assistance", []);
 
 		app.controller("ListCtrl", function($scope){
@@ -321,15 +322,6 @@
 					elem[0].addEventListener("dragend", scope.dragEnd, false);*/
 				}
 			}
-		});
-
-		app.directive("rubish", function(){
-			return{ 
-				restrict:"A",
-				link:function(scope, elem, attrs){
-
-				}
-			};
 		});
 
 		app.filter('ArraySort', function() {
