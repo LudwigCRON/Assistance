@@ -160,17 +160,19 @@
 						e = e.changedTouches[0];
 					}
 					var elem = dataTransfer.getData("element");
-					elem.style.left = e.pageX-document.body.scrollLeft-$scope.start.x+"px";
-					elem.style.top = e.pageY-document.body.scrollTop-$scope.start.y+"px";
+					elem.style.left = e.clientX-$scope.start.x+"px";
+					elem.style.top = e.clientY-$scope.start.y+"px";
 					var cells = document.getElementById("map").getElementsByClassName("cell");
 					//detect on which cell the label is over.
-					for(i=0;i<cells.length && cells[i].getAttribute("data-drop")=="true";i++){
-						var cell = cells[i];
-						var pos = cell.getClientRects()[0];
-						if(pos.left < e.clientX && pos.right > e.clientX && pos.top < e.clientY && pos.bottom > e.clientY){
-							cell.classList.add("over");
-						}else{
-							cell.classList.remove("over");
+					for(i=0;i<cells.length;i++){
+						if(cells[i].getAttribute("data-drop")=="true"){
+							var cell = cells[i];
+							var pos = cell.getClientRects()[0];
+							if(pos.left < e.clientX && pos.right > e.clientX && pos.top < e.clientY && pos.bottom > e.clientY){
+								cell.classList.add("over");
+							}else{
+								cell.classList.remove("over");
+							}
 						}
 					}
 					//detect if label is over rubish
@@ -306,14 +308,14 @@
 				restrict:"A",
 				link:function(scope, elem, attrs){
 					elem.bind("mousedown", scope.dragStart);
-					angular.element(document).bind("mouseup", scope.dragEnd);
-					angular.element(document).bind("mousemove", scope.dragMove);
+					angular.element(document.body).bind("mouseup", scope.dragEnd);
+					angular.element(document.body).bind("mousemove", scope.dragMove);
 					if(elem[0].ontouchstart){
 						elem.bind("touchstart", scope.dragStart);
 						elem.bind("touchleave", scope.dragCancel);
 						elem.bind("touchcancel", scope.dragCancel);
 						elem.bind("touchend", scope.dragEnd);
-						angular.element(document).bind("touchmove", scope.dragMove);
+						angular.element(document.body).bind("touchmove", scope.dragMove);
 					}					
 				}
 			}

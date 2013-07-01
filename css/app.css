@@ -3,6 +3,7 @@
 body{
 	font-size: 62.5%;
 	height: 100%!important;
+	width: ;
 	-ms-interpolation-mode: bicubic; /*beautifuler display for downsampled images in IE*/
 	-ms-touch-action: pan-y; /*redirect all touch event in javascript*/
 	padding: 0;
