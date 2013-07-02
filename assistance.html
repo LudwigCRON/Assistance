@@ -6,7 +6,7 @@
 	<meta name="application-name" content="Assistance" />
 	<title>Assistance Counter</title>
 	<link rel="stylesheet" href="css/app.css">
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+	<script type="text/javascript" src="js/angularjs.js"></script>
 	<script type="text/javascript" src="js/html2canvas.js" async="true"></script>
 	<script type="text/javascript" src="js/Classe.js"></script>
 	<script type="text/javascript" src="js/Promise.js"></script>
@@ -84,7 +84,7 @@
 			//operation sur les labels
 			$scope.addTag = function(){
 				if($scope.name.trim()!=""){
-					$scope.peoples.push($scope.name);
+					$scope.peoples.push($scope.name.trim());
 					localStorage.setItem("Assistance", JSON.stringify($scope.peoples));
 				}
 			};
@@ -93,11 +93,19 @@
 				if (e.stopPropagation) {
 					e.stopPropagation();
 				}
-				var elem = document.getElementById(dataTransfer.getData('text/html'));
-				elem.parentNode.removeChild(elem);
-				console.log("rm ",dataTransfer.getData('text/html'));
-				$scope.peoples = $scope.peoples.join(";").replace(dataTransfer.getData('text/html')+";", "").split(";");
-				localStorage.setItem("Assistance", JSON.stringify($scope.peoples));		
+				$scope.deleteTagByVal(dataTransfer.getData('text/html'));
+			};
+
+			$scope.deleteTagByVal = function(val){
+				angular.forEach($scope.peoples, function(people, key){
+					if(people.trim()==val){
+						var elem = document.getElementById(people);
+						elem.parentNode.removeChild(elem);
+						console.log("rm ", val);
+						$scope.peoples.splice(key, 1);
+					}
+				});
+				localStorage.setItem("Assistance", JSON.stringify($scope.peoples));	
 			};
 
 			$scope.countPerson = function(){
@@ -119,14 +127,22 @@
 				//for touch event
 				dataTransfer.setData("element", this);
 				$scope.drag = true;
-				$scope.start.x = e.pageX - document.body.scrollLeft;
-				$scope.start.y = e.pageY - document.body.scrollTop;
+
+				$scope.start.x = e.clientX - this.getClientRects()[0].left;
+				$scope.start.y = e.clientY - this.getClientRects()[0].top;
+
+				this.style.top = this.getClientRects()[0].top;
+				this.style.left = this.getClientRects()[0].left;
+				this.style.position = "fixed";
 			};
 
 			$scope.dragEnd = function(e){
 				e.stopPropagation();
 				var elem = dataTransfer.getData("element");
-				if(elem!=null) elem.style.opacity = 1;
+				if(elem!=null){
+					elem.style.opacity = 1;
+					elem.style.position = "relative";
+				}
 				//for touch event
 				$scope.drag = false;
 
@@ -203,6 +219,7 @@
 					$scope.peoples = JSON.parse(localStorage.getItem("Assistance")).sort();
 					angular.forEach($scope.peoples, function(value, key){
 						$scope.peoples[key] = value.replace(/(<([^>]+)>)/gi, "");
+						$scope.peoples[key] = value.trim();
 					});
 				}
 				console.log($scope.peoples);
@@ -321,6 +338,17 @@
 			}
 		});
 
+		app.directive("rubish", function(){
+			return{
+				restrict:"A",
+				link: function(scope, elem, attrs){
+					elem.bind("click", function(e){
+						scope.deleteTagByVal(scope.name);
+					});
+				}
+			};
+		});
+
 		app.filter('ArraySort', function() {
 			return function(input) {
 				return input.sort();
@@ -331,14 +359,14 @@
 			return ShortName(input);
 		});
 
-		angular.element(window).bind("scroll",function(e){
+		/*angular.element(window).bind("scroll",function(e){
 			var topBar = document.getElementsByClassName("top-bar")[0];
 			if(document.body.scrollTop>topBar.getClientRects()[0].height){
 				document.getElementById("map").style.top = 0;
 			}else{
 				document.getElementById("map").style.top = topBar.getClientRects()[0].height+"px";
 			}
-		});
+		});*/
 	</script>
 	<script src="js/Plan.js"></script>
 </body>
